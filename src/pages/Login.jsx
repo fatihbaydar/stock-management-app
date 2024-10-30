@@ -13,8 +13,14 @@ import { object, string } from "yup";
 
 const Login = () => {
   const loginSchema = object({
-    password: string().required().min(7).max(14),
-    email: string().email("Lütfen geçerli bir email giriniz!").required(),
+    password: string()
+      .required("Lütfen şifre giriniz!")
+      .min(7, "Şifre en az 7 karakter içermelidir")
+      .max(14, "Şifre en fazla 14 karakter içermelidir")
+      .matches(/[a-z]+/, "Şifre en az bir küçük harf içermelidir ")
+      .matches(/[A-Z]+/, "Şifre en az bir büyük harf içermelidir ")
+      .matches(/[@$!%*?&]+/, "Şifre en az bir özel karakter (@$!%*?&) içermelidir "),
+    email: string().email("Lütfen geçerli bir email giriniz!").required("email zorunludur"),
   });
   return (
     <Container maxWidth="lg">
@@ -68,7 +74,14 @@ const Login = () => {
               // console.log(actions);
             }}
           >
-            {({ isSubmitting, handleChange, values, touched, errors, handleBlur }) => (
+            {({
+              isSubmitting,
+              handleChange,
+              values,
+              touched,
+              errors,
+              handleBlur,
+            }) => (
               <Form>
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                   <TextField
@@ -79,9 +92,9 @@ const Login = () => {
                     variant="outlined"
                     onChange={handleChange}
                     value={values.email}
-                    error={touched.email && Boolean (errors.email)}
+                    error={touched.email && Boolean(errors.email)}
                     onBlur={handleBlur}
-                    helperText={touched.email && errors.email}
+                    helperText={errors.email}
                   />
                   <TextField
                     label="password"
@@ -93,7 +106,7 @@ const Login = () => {
                     value={values.password}
                     error={touched.password && Boolean(errors.password)}
                     onBlur={handleBlur}
-                    helperText={touched.password && errors.password}
+                    helperText={errors.password}
                   />
                   <Button
                     variant="contained"
