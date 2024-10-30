@@ -10,6 +10,7 @@ import TextField from "@mui/material/TextField";
 import { Button } from "@mui/material";
 import { Formik, Form } from "formik";
 import { object, string } from "yup";
+import { login } from "../services/apiRequests";
 
 const Login = () => {
   const loginSchema = object({
@@ -64,13 +65,14 @@ const Login = () => {
             validationSchema={loginSchema}
             onSubmit={(values, actions) => {
               //? POST (login)
+              login(values)
               //? Formu temizleme
               //? Mesaj (Toast)
               //? Routuing
               //? Global state güncellemesi
               actions.resetForm();
               actions.setSubmitting();
-              console.log(values);
+              // console.log(values);
               // console.log(actions);
             }}
           >
