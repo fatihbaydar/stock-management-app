@@ -9,9 +9,13 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import { Button } from "@mui/material";
 import { Formik, Form } from "formik";
+import { object, string } from "yup";
 
 const Login = () => {
-  const loginSchema = {};
+  const loginSchema = object({
+    password: string().required().min(7).max(14),
+    email: string().email("Lütfen geçerli bir email giriniz!").required(),
+  });
   return (
     <Container maxWidth="lg">
       <Grid
@@ -53,10 +57,18 @@ const Login = () => {
             initialValues={{ email: "", password: "" }}
             validationSchema={loginSchema}
             onSubmit={(values, actions) => {
-              // console.log(values)
+              //? POST (login)
+              //? Formu temizleme
+              //? Mesaj (Toast)
+              //? Routuing
+              //? Global state güncellemesi
+              actions.resetForm();
+              actions.setSubmitting();
+              console.log(values);
+              // console.log(actions);
             }}
           >
-            {() => (
+            {({ isSubmitting, handleChange, values, touched, errors, handleBlur }) => (
               <Form>
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                   <TextField
@@ -65,6 +77,11 @@ const Login = () => {
                     id="email"
                     type="email"
                     variant="outlined"
+                    onChange={handleChange}
+                    value={values.email}
+                    error={touched.email && Boolean (errors.email)}
+                    onBlur={handleBlur}
+                    helperText={touched.email && errors.email}
                   />
                   <TextField
                     label="password"
@@ -72,8 +89,17 @@ const Login = () => {
                     id="password"
                     type="password"
                     variant="outlined"
+                    onChange={handleChange}
+                    value={values.password}
+                    error={touched.password && Boolean(errors.password)}
+                    onBlur={handleBlur}
+                    helperText={touched.password && errors.password}
                   />
-                  <Button variant="contained" type="submit">
+                  <Button
+                    variant="contained"
+                    type="submit"
+                    disabled={isSubmitting}
+                  >
                     Submit
                   </Button>
                 </Box>
